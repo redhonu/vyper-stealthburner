@@ -17,7 +17,9 @@ and Mainsail's pause timeout override are 57600 seconds (16 hours). PAUSE
 does not disable heaters or motors; the default idle action does so at expiry.
 
 Compatibility edits: TEST_SPEED uses MINIMUM_CRUISE_RATIO; LOAD_FILAMENT and
-UNLOAD_FILAMENT convert temperature parameters to floats; Crowsnest uses
+UNLOAD_FILAMENT convert temperature parameters to floats. The intended 100mm
+unload is split into moves within the existing per-move extrusion limit.
+Crowsnest uses
 rollover_on_start instead of delete_log (log path is supplied by its service);
 Moonraker uses the current Crowsnest v5 dependency configuration. The local
 timelapse.cfg copy replaces the deprecated gcode_position.e accessor with

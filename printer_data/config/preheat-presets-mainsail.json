@@ -1,0 +1,42 @@
+{
+  "namespace": "mainsail",
+  "key": [
+    "presets"
+  ],
+  "value": {
+    "presets": {
+      "f6c10fdf-53d5-5e11-aea0-dce66bbd70fe": {
+        "name": "PETG",
+        "gcode": "",
+        "values": {
+          "extruder": {
+            "bool": true,
+            "type": "heater",
+            "value": 245
+          },
+          "heater_bed": {
+            "bool": true,
+            "type": "heater",
+            "value": 80
+          }
+        }
+      },
+      "d5c39461-a102-590a-aeea-e7ee7cf72f77": {
+        "name": "PLA",
+        "gcode": "",
+        "values": {
+          "extruder": {
+            "bool": true,
+            "type": "heater",
+            "value": 210
+          },
+          "heater_bed": {
+            "bool": true,
+            "type": "heater",
+            "value": 55
+          }
+        }
+      }
+    }
+  }
+}

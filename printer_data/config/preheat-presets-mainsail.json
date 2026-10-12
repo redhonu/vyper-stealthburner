@@ -28,7 +28,7 @@
           "extruder": {
             "bool": true,
             "type": "heater",
-            "value": 210
+            "value": 220
           },
           "heater_bed": {
             "bool": true,

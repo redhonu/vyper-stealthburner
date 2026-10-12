@@ -1,0 +1,18 @@
+{
+  "endpoint": "/machine/timelapse/settings",
+  "settings": {
+    "enabled": true,
+    "mode": "layermacro",
+    "camera": "Main",
+    "parkhead": false,
+    "park_time": 0.0,
+    "park_retract_distance": 0.0,
+    "park_extrude_distance": 0.0,
+    "fw_retract": false,
+    "gcode_verbose": false,
+    "autorender": true,
+    "stream_delay_compensation": 0.0
+  },
+  "slicer": "Frame at each layer; PARK_ENABLE=False; no manual TIMELAPSE_RENDER. Autorender runs on print completion.",
+  "render_threads": 2
+}

@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-13",
+  "host": "Raspberry Pi 5 4 GB",
+  "os": "MainsailOS 3.0.0 arm64 / Debian 13 Trixie",
+  "host_user": "pi",
+  "hostname": "vyper",
+  "timezone": "Europe/Zurich",
+  "components": {
+    "klipper": "e2b99a9159f992169c1ba53029dec020e850cc99",
+    "moonraker": "9e676eba6b02661a4dfa3ec6e7ac3f3504498e6d",
+    "crowsnest": "13d772b1ebd43bc872b5a676c2391d181634ae6d",
+    "KlipperScreen": "f2eb6919c0fcbcd4bab91ba59a5708415963d2ac",
+    "moonraker-timelapse": "c7fff11e542b95e0e15b8bb1443cea8159ac0274",
+    "klipper-backup": "142b2068f0d4224e0b56ad6235d331d81c3f9e12",
+    "kiauh": "d3e538de7b3163abe27fdf8116a60716d4db31ce",
+    "mainsail-config": "ff3869a621db17ce3ef660adbbd3fa321995ac42"
+  },
+  "mainsail": "2.19.0",
+  "KAMP": "997838cb36447d697da780aedf74d97dc1763e1e",
+  "retained": [
+    "KlipperScreen X11 1024x600",
+    "Crowsnest v5 USB webcam",
+    "Moonraker Timelapse",
+    "KAMP adaptive mesh and line purge",
+    "Klipper-Backup filewatch/on-boot"
+  ],
+  "disabled_or_removed": [
+    "Sonar",
+    "manual Git backup macros",
+    "G-Code Shell Command"
+  ],
+  "config_source_commit": "dfe0ab052e4aaa6bc43db54f798bf566ba2c5045",
+  "idle_pause_timeout_seconds": 57600,
+  "timelapse": "in-place; no park/retract/dwell; render on completion",
+  "ssh": "key authentication only; root login disabled",
+  "orca": "Orca Cloud",
+  "scope_note": "Versions from recorded recovery checks; no live printer inspection during this task"
+}

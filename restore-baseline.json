@@ -21,18 +21,36 @@
     "KlipperScreen X11 1024x600",
     "Crowsnest v5 USB webcam",
     "Moonraker Timelapse",
-    "KAMP adaptive mesh and line purge",
-    "Klipper-Backup filewatch/on-boot"
+    "KAMP line purge and Smart Park",
+    "Klipper-Backup filewatch/on-boot",
+    "Native Klipper adaptive mesh, one touch per print-mesh point"
   ],
   "disabled_or_removed": [
     "Sonar",
     "manual Git backup macros",
     "G-Code Shell Command"
   ],
-  "config_source_commit": "dfe0ab052e4aaa6bc43db54f798bf566ba2c5045",
+  "config_source_commit": "5031299a97e887945e0a8a75f62bf9ee2361295f",
   "idle_pause_timeout_seconds": 57600,
   "timelapse": "in-place; no park/retract/dwell; render on completion",
   "ssh": "key authentication only; root login disabled",
   "orca": "Orca Cloud",
-  "scope_note": "Versions from recorded recovery checks; no live printer inspection during this task"
+  "scope_note": "Source versions captured in idle-time private backup; native adaptive/BLTouch mode checked live under user supervision.",
+  "meshing": {
+    "implementation": "Klipper built-in adaptive",
+    "print_mesh_samples": 1,
+    "full_area_probe_count": [
+      15,
+      15
+    ],
+    "adaptive_margin": 5,
+    "horizontal_move_z": 5,
+    "stow_on_each_sample": false,
+    "probe_with_touch_mode": true,
+    "pin_move_time": 0.68,
+    "downward_speed": 3,
+    "lift_speed": 10,
+    "xy_speed": 500,
+    "global_samples_for_z_tilt": 2
+  }
 }

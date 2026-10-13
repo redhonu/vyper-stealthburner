@@ -22,5 +22,11 @@ duplicated here.
 
 This public repository cannot contain a full private backup: the Moonraker
 database, Wi-Fi credentials and Git backup token must be stored separately.
-The supplied backup utility captures those on an idle Pi. It has been tested
-offline, but has not been run on the current printer.
+The supplied backup utility captures those on an idle Pi. On 13 October 2026,
+it produced a verified 49-file private bundle after the meshing changes. The
+bundle is stored separately; see BACKUP.md for coverage and inventory warnings.
+
+Meshing now uses Klipper built-in adaptive support: one touch per print-mesh
+point, 15×15 full-area density, 5 mm margin/travel height, BLTouch touch mode
+with no stowing between points. KAMP remains for line purge and Smart Park.
+Z tilt keeps two samples. Downward probing remains 3 mm/s.

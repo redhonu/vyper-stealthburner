@@ -33,7 +33,13 @@ Python virtual environments across OS releases. Review
 [Klipper configuration changes](https://www.klipper3d.org/Config_Changes.html)
 before deliberately upgrading past the baseline.
 
-KAMP belongs in `/home/pi/KAMP`; make `printer_data/config/KAMP` available using
+KAMP supplies purge/Smart Park, while meshing uses native Klipper adaptive
+support. Keep KAMP/Adaptive_Meshing.cfg disabled in KAMP_Settings.cfg to avoid
+replacing the native BED_MESH_CALIBRATE command. PRINT_START uses ADAPTIVE=1
+and SAMPLES=1; global probe samples remain 2 for Z tilt. Restore the checked
+BLTouch touch/no-stow settings and 5 mm mesh travel clearance together.
+
+KAMP can be installed in `/home/pi/KAMP`; make `printer_data/config/KAMP` available using
 the upstream link or the bundle's materialized copy. `mainsail.cfg` is supplied
 by mainsail-config and often symlinked; it is absent from the public config
 backup because the backup job skips symlinks. Ensure it exists before starting

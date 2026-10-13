@@ -65,8 +65,16 @@ The preserved 12 October raw card image and verified selective archive contain
 the pre-reinstall private state. They do not include later calibration changes.
 The latest available `main` commit at kit creation was
 `dfe0ab052e4aaa6bc43db54f798bf566ba2c5045`, with saved probe z_offset 2.308.
-The user subsequently reported successful first-layer printing. No live
-comparison or new private bundle was made during that print. Obtain a new
-private bundle when idle to complete the current backup.
+The user subsequently reported successful first-layer printing. That initial
+snapshot has now been superseded by the 13 October config backup and private
+bundle described below. Capture another private bundle after later changes to
+host settings or integration state.
 
 Official API reference: [Moonraker database backup](https://moonraker.readthedocs.io/en/latest/external_api/database/#backup-database).
+
+A new private bundle was captured on the idle printer after the native mesh
+change on 13 October 2026: 49 files, including a consistent Moonraker database.
+It was copied off the Pi and checksum verified. The host has no MCU .config
+(the kit supplies its recovered build reference), and KAMP has no Git checkout
+(its macro files are materialized in the private config archive). Those two
+inventory warnings do not mean the included configs or database are missing.

@@ -34,3 +34,32 @@ Hardware references:
 
 - [CRYD Stealthburner documentation](https://book.cryd.de/books/hersteller-marken-modelle/page/stealthburner)
 - [CRYD Vyper Stealthburner files](https://github.com/cryd-s/Vyper_extended/tree/main/extended_board/stealthburner%20toolhead)
+
+Meshing now uses Klipper built-in adaptive support: one touch per print-mesh
+point, 15×15 full-area density, 5 mm margin/travel height, BLTouch touch mode
+with no stowing between points. KAMP remains for line purge and Smart Park.
+Z tilt keeps two samples. Downward probing remains 3 mm/s.
+
+## Completed calibration and checks
+
+These are dated results, not values to overwrite a newer saved configuration.
+Printer calibration lives in `printer.cfg`; filament calibration lives in Orca
+Cloud. Update this record when a calibration is completed, with material/nozzle
+and the resulting value. Plans and unfinished tests are excluded.
+
+| Date | Calibration or check | Result and scope |
+| --- | --- | --- |
+| 2026-10-13 | Saved probe offset | 2.308 mm; user corrected the offset and reported successful first-layer printing on the Glacier Pro plate. Preserve the newest SAVE_CONFIG block. |
+| 2026-10-13 | Z travel check | Supervised Z20-Z120 cycles at 10 mm/s; user observed smooth movement on both independent sides. Height limit remains 240 mm. |
+| 2026-10-13 | Bambu PLA Matte flow | User selected -0.05 in the YOLO flow test; saved flow ratio 0.93, standard-flow Revo 0.4 mm. Stored in Orca Cloud. |
+| 2026-10-13 | BLTouch touch/no-stow repeatability | Ten samples: range 0.0225 mm, standard deviation 0.006344 mm. Immediate previous mode range was also 0.0225 mm. |
+| 2026-10-13 | Native adaptive mesh checks | One touch per point; representative 4x4 mesh 35.35 s versus 121.56 s previously. Nine-point full-area clearance check completed at 5 mm travel height. First-layer confirmation after this mode change remains separate from these checks. |
+| 2026-10-13 | Independent Z alignment check | Completed at 0.010 mm residual against 0.020 mm tolerance after four retries. |
+
+The latest pressure-advance calibration result has not yet been recorded.
+The existing Klipper value 0.042 is a prior baseline, not a calibrated Bambu
+PLA Matte result; slicer filament G-Code can override it.
+
+The tested meshing configs were automatically backed up at
+`5031299a97e887945e0a8a75f62bf9ee2361295f`. A private 49-file host/config/database
+bundle was also captured and verified separately on 13 October 2026.

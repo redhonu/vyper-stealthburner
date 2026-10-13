@@ -19,7 +19,7 @@ rebuild also needs a separately stored private backup for Moonraker settings,
 network configuration and Git backup credentials. OrcaSlicer presets are managed
 in Orca Cloud; no slicer account credentials are stored here.
 
-Installed extras: KlipperScreen, Crowsnest v5, KAMP, Moonraker Timelapse and
+Installed extras: KlipperScreen, Crowsnest v5, KAMP, Moonraker Timelapse, Spoolman and
 automatic Klipper-Backup. Sonar is disabled; manual Git macros and G-Code Shell
 Command are removed. Both pause/idle timeouts are 16 hours (57600 seconds).
 Timelapse captures in place without parking or retraction and renders after the
@@ -63,3 +63,17 @@ PLA Matte result; slicer filament G-Code can override it.
 The tested meshing configs were automatically backed up at
 `5031299a97e887945e0a8a75f62bf9ee2361295f`. A private 49-file host/config/database
 bundle was also captured and verified separately on 13 October 2026.
+
+## Spoolman
+
+Spoolman 0.27.0 is installed in Docker with persistent SQLite data, automatic
+startup and Moonraker's native filament tracking. Its listener is local to the
+Pi at `127.0.0.1:7912`; access through an SSH tunnel until the reverse proxy is
+configured. Native Mainsail/KlipperScreen spool selection is available. Inventory
+and spool weights are private database state; no IDs are hard-coded in G-Code.
+
+[Spoolman deployment, access and restore](https://github.com/redhonu/vyper-stealthburner/blob/restore-tools/docs/SPOOLMAN.md)
+includes the actual deployment files and backup coverage. The private backup
+utility now captures the local Spoolman database consistently; the initial
+Spoolman-only snapshot was verified and copied off the Pi. Capture another full
+private Pi bundle when idle to combine the latest host and integration state.

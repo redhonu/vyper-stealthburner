@@ -32,6 +32,73 @@ def fixture(path, files, manifest_files=None):
 
 
 class BackupTests(unittest.TestCase):
+    def test_spoolman_backup_preserves_data_and_deployment(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            folder = home / 'spoolman'
+            (folder / 'data/backups').mkdir(parents=True)
+            (folder / 'compose.yml').write_bytes(b'services: {}\n')
+            db = folder / 'data/backups/spoolman.db'
+            with closing(sqlite3.connect(db)) as conn:
+                conn.execute('CREATE TABLE spool (remaining REAL)')
+                conn.execute('INSERT INTO spool VALUES (980)')
+                conn.commit()
+            files = {}
+            def add(path, name, required=False):
+                files[name] = Path(path).read_bytes()
+            def api(route, method='GET'):
+                if route == '/info':
+                    return {'db_type': 'sqlite', 'data_dir': '/home/app/.local/share/spoolman', 'version': '0.27.0'}
+                self.assertEqual(method, 'POST')
+                return {'path': '/home/app/.local/share/spoolman/backups/spoolman.db'}
+            with patch.object(backup_pi, 'spoolman_request', side_effect=api):
+                backup_pi.capture_spoolman(home, add, files)
+            self.assertEqual(files['spoolman/compose.yml'], b'services: {}\n')
+            staged = home / 'restored.db'
+            staged.write_bytes(files['spoolman/data/spoolman.db'])
+            with closing(sqlite3.connect(staged)) as conn:
+                self.assertEqual(conn.execute('SELECT remaining FROM spool').fetchone()[0], 980)
+
+    def test_spoolman_rejects_backup_path_outside_mounted_directory(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            (home / 'spoolman').mkdir()
+            (home / 'spoolman/compose.yml').write_text('services: {}\n')
+            for path in ('/etc/passwd', '/home/app/.local/share/spoolman/backups/../spoolman.db'):
+                def api(route, method='GET'):
+                    if route == '/info':
+                        return {'db_type': 'sqlite', 'data_dir': '/home/app/.local/share/spoolman'}
+                    return {'path': path}
+                with self.subTest(path=path), patch.object(backup_pi, 'spoolman_request', side_effect=api):
+                    with self.assertRaisesRegex(RuntimeError, 'Unexpected Spoolman backup path'):
+                        backup_pi.capture_spoolman(home, lambda *a, **kw: None, {})
+
+    def test_spoolman_cached_backup_captures_newer_live_data(self):
+        with tempfile.TemporaryDirectory() as root:
+            home = Path(root)
+            folder = home / 'spoolman'
+            (folder / 'data/backups').mkdir(parents=True)
+            (folder / 'compose.yml').write_text('services: {}\n')
+            for path, value in ((folder / 'data/backups/spoolman.db', 1000),
+                                (folder / 'data/spoolman.db', 980)):
+                with closing(sqlite3.connect(path)) as conn:
+                    conn.execute('CREATE TABLE spool (remaining REAL)')
+                    conn.execute('INSERT INTO spool VALUES (?)', (value,))
+                    conn.commit()
+            def api(route, method='GET'):
+                if route == '/info':
+                    return {'db_type': 'sqlite', 'data_dir': '/home/app/.local/share/spoolman'}
+                return {'path': '/home/app/.local/share/spoolman/backups/spoolman.db', 'created': False}
+            files = {}
+            def add(path, name, required=False):
+                files[name] = Path(path).read_bytes()
+            with patch.object(backup_pi, 'spoolman_request', side_effect=api):
+                backup_pi.capture_spoolman(home, add, files)
+            restored = home / 'restored.db'
+            restored.write_bytes(files['spoolman/data/spoolman.db'])
+            with closing(sqlite3.connect(restored)) as conn:
+                self.assertEqual(conn.execute('SELECT remaining FROM spool').fetchone()[0], 980)
+
     def test_capture_private_bundle_with_consistent_database(self):
         with tempfile.TemporaryDirectory() as root:
             home = Path(root) / 'home'

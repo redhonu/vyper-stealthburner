@@ -5,6 +5,7 @@
 | Current printer configs and saved calibration | Repository `main` | Newest automatically pushed configuration |
 | Restore utilities, component inventory, host setup | Repository `restore-tools` | Rebuild the software environment |
 | Moonraker SQLite database | Private idle-time bundle | Mainsail settings, webcam, history and integration state |
+| Local Spoolman SQLite database and Compose deployment | Private bundle | Spool inventory and filament usage; fresh consistent online snapshot |
 | Config symlink targets, firmware build options, local source patches | Private bundle | Include files absent from Git and local compatibility changes |
 | NetworkManager profiles, SSH policy/public authorized keys, backup .env | Private bundle | Network, login policy and automatic Git backup |
 | OrcaSlicer presets | Orca Cloud | Restore using the same account, then verify selected Vyper presets |
@@ -78,3 +79,10 @@ It was copied off the Pi and checksum verified. The host has no MCU .config
 (the kit supplies its recovered build reference), and KAMP has no Git checkout
 (its macro files are materialized in the private config archive). Those two
 inventory warnings do not mean the included configs or database are missing.
+
+Spoolman was installed afterward. The backup utility now includes its local
+Compose deployment and SQLite state as described in [SPOOLMAN.md](SPOOLMAN.md).
+The earlier 49-file bundle predates this addition; a separate Spoolman-only
+snapshot was verified and copied off the Pi. Capture a new full private bundle
+when idle for the combined current state. Spoolman's midnight backups stay on
+the Pi and do not by themselves protect against SD-card failure.

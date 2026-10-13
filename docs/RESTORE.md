@@ -33,6 +33,11 @@ Python virtual environments across OS releases. Review
 [Klipper configuration changes](https://www.klipper3d.org/Config_Changes.html)
 before deliberately upgrading past the baseline.
 
+Restore the installed Spoolman Docker service separately using
+[SPOOLMAN.md](SPOOLMAN.md), including its private database. Its deployment files
+are supplied in `system/`; Moonraker keeps a local URL independent of any later
+Traefik proxy. Do not restore inventory from public Git, which does not contain it.
+
 KAMP supplies purge/Smart Park, while meshing uses native Klipper adaptive
 support. Keep KAMP/Adaptive_Meshing.cfg disabled in KAMP_Settings.cfg to avoid
 replacing the native BED_MESH_CALIBRATE command. PRINT_START uses ADAPTIVE=1

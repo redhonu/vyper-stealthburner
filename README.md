@@ -16,6 +16,7 @@ Always take the newest `main` configuration, rather than this branch's older
 - [Pi 5 screen configuration](system/20-vyper-vc4.conf)
 - [Key-only SSH configuration](system/00-vyper-key-only.conf)
 - [Recovered MCU build configuration](system/klipper-mcu.config)
+- [Installed Spoolman service and restore](docs/SPOOLMAN.md)
 
 OrcaSlicer profiles are managed in Orca Cloud, as requested; they are not
 duplicated here.

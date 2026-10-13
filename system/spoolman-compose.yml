@@ -1,0 +1,20 @@
+name: vyper-spoolman
+services:
+  spoolman:
+    image: ghcr.io/donkie/spoolman:0.27.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7912:8000"
+    volumes:
+      - ./data:/home/app/.local/share/spoolman
+    environment:
+      TZ: Europe/Zurich
+      PUID: "1000"
+      PGID: "1000"
+      SPOOLMAN_AUTOMATIC_BACKUP: "TRUE"
+    cpus: 1.0
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

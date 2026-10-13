@@ -6,9 +6,10 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import sqlite3
 import subprocess
+import tempfile
 import urllib.request
 import zipfile
 
@@ -43,6 +44,59 @@ def command(argv):
     if result.returncode:
         raise RuntimeError('Inventory command failed: ' + argv[0])
     return result.stdout
+
+
+def spoolman_request(route, method='GET'):
+    req = urllib.request.Request('http://127.0.0.1:7912/api/v1' + route,
+                                 data=b'' if method == 'POST' else None, method=method)
+    with urllib.request.urlopen(req, timeout=30) as response:
+        return json.load(response)
+
+
+def capture_spoolman(home, add, files):
+    """Capture the installed local Compose service using SQLite's online backup."""
+    folder = Path(home) / 'spoolman'
+    if not (folder / 'compose.yml').is_file():
+        return
+    add(folder / 'compose.yml', 'spoolman/compose.yml', required=True)
+    if (folder / '.env').is_file():
+        add(folder / '.env', 'spoolman/.env', required=True)
+    info = spoolman_request('/info')
+    if info['db_type'] != 'sqlite' or info['data_dir'] != '/home/app/.local/share/spoolman':
+        raise RuntimeError('Spoolman deployment differs from the supported local SQLite layout')
+    result = spoolman_request('/backup', method='POST')
+    path = PurePosixPath(result['path'])
+    if '..' in path.parts:
+        raise RuntimeError('Unexpected Spoolman backup path')
+    try:
+        relative = path.relative_to(PurePosixPath(info['data_dir']) / 'backups')
+    except ValueError:
+        raise RuntimeError('Unexpected Spoolman backup path') from None
+    allowed = (folder / 'data/backups').resolve()
+    database = (allowed / str(relative)).resolve()
+    if database.parent != allowed:
+        raise RuntimeError('Unexpected Spoolman backup directory')
+    with closing(sqlite3.connect(database.as_uri() + '?mode=ro', uri=True)) as conn:
+        if conn.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
+            raise RuntimeError('Spoolman database integrity check failed')
+    if result.get('created', True):
+        add(database, 'spoolman/data/spoolman.db', required=True)
+    else:
+        # New Spoolman releases may return a throttled, older snapshot. Take a
+        # fresh SQLite online backup rather than archiving possibly stale data.
+        live = (folder / 'data/spoolman.db').resolve()
+        if live.parent != (folder / 'data').resolve():
+            raise RuntimeError('Unexpected live Spoolman database location')
+        with tempfile.TemporaryDirectory(prefix='vyper-spoolman-') as tmp:
+            snapshot = Path(tmp) / 'spoolman.db'
+            with closing(sqlite3.connect(live.as_uri() + '?mode=ro', uri=True)) as source, \
+                    closing(sqlite3.connect(snapshot)) as target:
+                source.backup(target, pages=100)
+                if target.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
+                    raise RuntimeError('Spoolman snapshot integrity check failed')
+            files['spoolman/data/spoolman.db'] = snapshot.read_bytes()
+    info['private_backup_method'] = 'Spoolman API' if result.get('created', True) else 'SQLite online backup (API snapshot reused)'
+    files['inventory/spoolman.json'] = json.dumps(info, indent=2).encode()
 
 
 def create_backup(home, output, base, system_root=Path('/')):
@@ -135,6 +189,7 @@ def create_backup(home, output, base, system_root=Path('/')):
     with closing(sqlite3.connect(database.as_uri() + '?mode=ro', uri=True)) as conn:
         if conn.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
             raise RuntimeError('Database integrity check failed')
+    capture_spoolman(home, add, files)
     for name, path in sources.items():
         if path.read_bytes() != files[name]:
             raise RuntimeError('Source changed during backup; retry when idle: ' + name)
@@ -144,7 +199,7 @@ def create_backup(home, output, base, system_root=Path('/')):
                                    'mode': 0o600})
     manifest = {'format': 'vyper-private-backup-v1', 'created_utc': stamp,
                 'private': True, 'files': metadata, 'warnings': warnings,
-                'scope': 'Configuration, database, relevant host settings and source versions; not an OS image'}
+                'scope': 'Configuration, Moonraker and installed local Spoolman databases, relevant host settings and source versions; not an OS image'}
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True, mode=0o700)
     archive = output / ('vyper-private-' + stamp + '.zip')

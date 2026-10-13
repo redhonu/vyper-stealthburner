@@ -23,14 +23,15 @@
     "Moonraker Timelapse",
     "KAMP line purge and Smart Park",
     "Klipper-Backup filewatch/on-boot",
-    "Native Klipper adaptive mesh, one touch per print-mesh point"
+    "Native Klipper adaptive mesh, one touch per print-mesh point",
+    "Spoolman native inventory and extrusion tracking"
   ],
   "disabled_or_removed": [
     "Sonar",
     "manual Git backup macros",
     "G-Code Shell Command"
   ],
-  "config_source_commit": "5031299a97e887945e0a8a75f62bf9ee2361295f",
+  "config_source_commit": "444b2f390a0b4bca69b8c98510200209a1de3fe9",
   "idle_pause_timeout_seconds": 57600,
   "timelapse": "in-place; no park/retract/dwell; render on completion",
   "ssh": "key authentication only; root login disabled",
@@ -52,5 +53,21 @@
     "lift_speed": 10,
     "xy_speed": 500,
     "global_samples_for_z_tilt": 2
+  },
+  "spoolman": {
+    "version": "0.27.0",
+    "image": "ghcr.io/donkie/spoolman:0.27.0",
+    "image_digest": "sha256:7aba565eff774c6dda212d4204de8fa30bf68d513127ef875cc7ef3197a4664e",
+    "compose_path": "/home/pi/spoolman/compose.yml",
+    "data_path": "/home/pi/spoolman/data",
+    "database": "SQLite",
+    "host_listener": "127.0.0.1:7912",
+    "moonraker_server": "http://127.0.0.1:7912",
+    "sync_rate": 5,
+    "timezone": "Europe/Zurich",
+    "restart_policy": "unless-stopped",
+    "cpu_limit": 1,
+    "native_tracking_verified": true,
+    "custom_filament_helper_installed": false
   }
 }
